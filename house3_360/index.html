@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<title>House 360</title>
+	<style>
+		body {
+			margin: 0;
+			font-family: Arial, Helvetica, sans-serif;
+			background-color: black;
+		}
+
+		#my3dCanv {
+			position: fixed;
+			top: 0;
+			bottom: 0;
+			z-index: -1;
+		}
+
+		#map {
+			margin: 5px;
+			position: fixed;
+		}
+
+		.fphs {
+			text-align: center;
+			margin: 2px;
+			padding: 3px 6px 3px 6px;
+			border-radius: 12px;
+			background-color: #00000033;
+		}
+
+		.fphs:hover {
+			cursor: pointer;
+			background-color: #ffffff33;
+		}
+
+		.title {
+			font: bold 10px sans-serif;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="map">
+		<div class='fphs' onclick="change('h0001.jpg')">Front Yard</div>
+		<div class='fphs' onclick="change('h0002.jpg')">Front Porch</div>
+		<div class='fphs' onclick="change('h0003.jpg')">Family Space</div>
+		<div class='fphs' onclick="change('h0004.jpg')">Kitchen</div>
+		<div class='fphs' onclick="change('h0005.jpg')">Den</div>
+		<div class='fphs' onclick="change('h0006.jpg')">Room 1</div>
+		<div class='fphs' onclick="change('h0007.jpg')">Room 2</div>
+		<div class='fphs' onclick="change('h0008.jpg')">Back Porch</div>
+		<div class='fphs' onclick="change('h0009.jpg')">Back Yard</div>
+		<div class='fphs' onclick="change('h0010.jpg')" hidden>Back Yard</div>
+	</div>
+
+	<script type="module">
+		import * as THREE from 'https://unpkg.com/three@0.126.1/build/three.module.js';
+
+		import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
+
+		const scene = new THREE.Scene();
+		const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+		camera.position.set(0, 0, 0);
+		//camera.lookAt(1, 0, 0);
+
+		const renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.domElement.id = 'my3dCanv';
+		document.body.appendChild(renderer.domElement);
+
+		const controls = new OrbitControls(camera, renderer.domElement);
+		controls.target.set(1, 0, 0);
+		controls.update();
+		controls.enablePan = false;
+		controls.enableDamping = true;
+		controls.rotateSpeed = 0.5;
+
+		var bg = new THREE.TextureLoader().load("images/h0001.jpg");
+
+		bg.mapping = THREE.EquirectangularReflectionMapping;
+		scene.background = bg;
+
+
+		function animate() {
+			requestAnimationFrame(animate);
+			if (scene.background != bg) scene.background = bg;
+			controls.update();
+			renderer.render(scene, camera);
+
+		};
+
+		animate();
+
+		function change(fn) {
+			bg = new THREE.TextureLoader().load("images/" + fn);
+			bg.mapping = THREE.EquirectangularReflectionMapping;
+		}
+		window.change = change;
+
+
+	</script>
+</body>
+
+</html>
